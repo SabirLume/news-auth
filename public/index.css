@@ -1,0 +1,11 @@
+.jumbotron{
+    background: rgb(110, 55, 55);
+} 
+body{
+    color: whitesmoke;
+    background: rgb(19, 26, 29);
+}
+.btn{
+    background: transparent;
+    color: white;
+}

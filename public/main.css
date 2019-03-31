@@ -1,0 +1,41 @@
+*:focus{
+    outline: none;
+}
+body{
+    background: black;
+    color: gray;
+}
+h1, h2, h3, p{
+    color: white;
+}
+input{
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid white;
+    color: white;
+    
+}
+button{
+    border: none;
+    border-color: white;
+    background: transparent;
+    color: white;
+}
+button:hover{
+    color: red;
+}
+.btn{
+    background: transparent;
+    color: white;
+}
+.unlink{
+    color: white;
+}
+.well{
+    background: rgb(110, 55, 55);
+}
+form{
+    padding-top: 30px;
+}
