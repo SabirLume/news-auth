@@ -14,6 +14,6 @@ In this application I used a API to grab news articles based on what the user ty
 
 ## Lessons Learned:
 
-I learned how to use someone else's API and then take the information I recieved from that API into my DB.
+I learned how to use someone else's API and then take the information I recieved from that API into my DB
 
 

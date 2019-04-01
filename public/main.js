@@ -41,7 +41,7 @@ Array.from(star).forEach(function(element) {
       element.addEventListener('click', function(){
         // const name = this.parentNode.parentNode.childNodes[1].innerText
         const msg = this.parentNode.parentNode.childNodes[1].innerText
-        const star = parseFloat(this.parentNode.parentNode.childNodes[5].innerText)
+        const star = parseFloat(this.parentNode.parentNode.childNodes[4].innerText)
         console.log(msg)
         console.log(star)
         fetch('messages', {
@@ -57,7 +57,7 @@ Array.from(star).forEach(function(element) {
         })
         .then(data => {
           console.log(data)
-          // window.location.reload(true)
+          window.location.reload(true)
         })
       });
 });

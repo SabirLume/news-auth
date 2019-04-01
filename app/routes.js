@@ -13,7 +13,7 @@
           if (err) return console.log(err)
           res.render('profile.ejs', {
             user : req.user,
-            messages: result
+            newsArticles: result
           })
         })
     });

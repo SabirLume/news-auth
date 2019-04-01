@@ -39,3 +39,7 @@ button:hover{
 form{
     padding-top: 30px;
 }
+.saved{
+    width: 50%;
+    float: left;
+}
