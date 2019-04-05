@@ -1,4 +1,4 @@
- module.exports = function(app, passport, db) {
+ module.exports = function(app, passport, db, io) {
 
 // normal routes ===============================================================
 
@@ -6,14 +6,23 @@
     app.get('/', function(req, res) {
         res.render('index.ejs');
     });
-
+    function getNewsArticles(req, res){
+      return new Promise((resolve, reject) => {
+        db.collection('newsArticles').find().toArray((err, result) => {
+          if (err) reject({error: err})
+          resolve({user: req.user , newsArticles: result})
+        })
+      })
+    }
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
-        db.collection('newsArticles').find().toArray((err, result) => {
-          if (err) return console.log(err)
+        getNewsArticles(req, res).then( (result) => {
+          if (result.error) {
+            return console.log(result.error);
+          }
           res.render('profile.ejs', {
-            user : req.user,
-            newsArticles: result
+            user : result.user,
+            newsArticles: result.newsArticles
           })
         })
     });
@@ -32,8 +41,13 @@
       db.collection('newsArticles').save({msg: req.body.msg}, (err, result) => {
       //  console.log(req.body)
         if (err) return console.log(err)
+        getNewsArticles(req, res).then( (result) => {
+          console.log("get news articles")
+          let data = result.newsArticles
+          io.emit("update news", data[data.length-1]);
+        })
+        // res.redirect('/profile')
         console.log('saved to database')
-        res.redirect('/profile')
       })
     })
 

@@ -14,7 +14,9 @@ var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
-
+var realTime_server = require('http').createServer(app);
+//socket.io does real time updates
+var io           = require('socket.io')(realTime_server);
 var configDB = require('./config/database.js');
 
 var db
@@ -23,19 +25,9 @@ var db
 mongoose.connect(configDB.url, (err, database) => {
   if (err) return console.log(err)
   db = database
-  require('./app/routes.js')(app, passport, db);
+  require('./app/routes.js')(app, passport, db, io);
 }); // connect to our database
 
-//app.listen(port, () => {
-    // MongoClient.connect(configDB.url, { useNewUrlParser: true }, (error, client) => {
-    //     if(error) {
-    //         throw error;
-    //     }
-    //     db = client.db(configDB.dbName);
-    //     console.log("Connected to `" + configDB.dbName + "`!");
-    //     require('./app/routes.js')(app, passport, db);
-    // });
-//});
 
 require('./config/passport')(passport); // pass passport for configuration
 
@@ -58,10 +50,22 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
+//standard for communitcation to allow for real time data flow
+//on signifies some event  ("conection")
+io.on("connection", function(socket){
+  console.log("server: user connected")
+  socket.on("disconnect", function(){
+    console.log("server: the client has disconnected")
+  })
+  socket.on("news", function(msg){
+    console.log("server: it works " + msg)
+    io.emit("news", msg + " server message my g")
+  })
+})
 
 // routes ======================================================================
 //require('./app/routes.js')(app, passport, db); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
-app.listen(port);
+realTime_server.listen(port);
 console.log('The magic happens on port ' + port);

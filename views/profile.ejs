@@ -63,11 +63,19 @@
           </div>
           <% } %>
           <section class = "saved">
-          <h3>Saved Messages</h3>
-          <ul class="messages12">
-          <% for(var i=0; i<newsArticles.length; i++) {%>
+          <h3>Saved Articles</h3>
+          <ul class="messages12" id="savedMessages">
+          <% for(var i=0; i<newsArticles.length; i++) {
+            let beginLink = newsArticles[i].msg.indexOf('https://')
+            console.log("urlbegins@position", beginLink)
+            let article = newsArticles[i].msg.substring(0,beginLink);
+            let link = newsArticles[i].msg.substring(beginLink);
+            console.log(article)
+            console.log(link)
+            %>
             <li class="message1">
-              <span><%= newsArticles[i].msg %></span>
+              <span><%= article %></span>
+              <a href="<%= link %>">Click Here to read more</a>
               
               <span><i class="fa fa-trash" aria-hidden="true"></i></span>
             </li>
@@ -98,7 +106,28 @@
 
       </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>
 <script src="main.js"></script>
+<script>
+  //conect for the connection for client and server side (socket)
+  //allows access to the socket on the server
+var socket = io("http://localhost:8080")
+socket.on('connection', function(){
+  console.log("client: connected on the server")
+  alert("client: connected to server socket")
+})
+
+socket.emit("news","hello from my ejs file")
+socket.on("news", function(m) {
+  console.log(m);
+  console.log("client: message from server, wow")
+})
+socket.on("disconnect", function(){
+ console.log("client: disconnect from socket") 
+
+})
+</script>
+
 
 </body>
 </html>
