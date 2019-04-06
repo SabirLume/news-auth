@@ -33,15 +33,15 @@ fetch(url)
       const span = document.querySelector('.message5');
       // dot notation allow to target/access the property of the object
       link.innerText = "Click here to read more"
-      link.href = response.articles[4].url;
-      // link.setAttribute('href', response.articles[4].url );
+      // link.href = response.articles[4].url
+      link.setAttribute('href', response.articles[4].url );
       //putting link on page
       span.appendChild(link);
 
             //creating a clickable link
             const link4 = document.createElement("a");
             const span4 = document.querySelector('.message4');
-            link4.innerText = "Click here to read more"
+            link4.innerText = response.articles[3].url
             link4.setAttribute('href', response.articles[3].url );
             //putting link on page
             span4.appendChild(link4);
@@ -49,7 +49,7 @@ fetch(url)
                   //creating a clickable link
       const link3 = document.createElement("a");
       const span3 = document.querySelector('.message3');
-      link3.innerText = "Click here to read more"
+      link3.innerText = response.articles[2].url
       link3.setAttribute('href', response.articles[2].url );
       //putting link on page
       span3.appendChild(link3);
@@ -57,7 +57,7 @@ fetch(url)
             //creating a clickable link
             const link2 = document.createElement("a");
             const span2 = document.querySelector('.message2');
-            link2.innerText = "Click here to read more"
+            link2.innerText = response.articles[1].url
             link2.setAttribute('href', response.articles[1].url );
             //putting link on page
             span2.appendChild(link2);
@@ -65,7 +65,7 @@ fetch(url)
                   //creating a clickable link
       const link1 = document.createElement("a");
       const span1 = document.querySelector('.message1');
-      link1.innerText = "Click here to read more"
+      link1.innerText = response.articles[0].url
       link1.setAttribute('href', response.articles[0].url );
       //putting link on page
       span1.appendChild(link1);
@@ -82,6 +82,7 @@ fetch(url)
 Array.from(star).forEach(function(element) {
       element.addEventListener('click', function(){
         // const name = this.parentNode.parentNode.childNodes[1].innerText
+        console.log("beginning star handler")
         const msg = this.parentNode.parentNode.childNodes[1].innerText
         const star = parseFloat(this.parentNode.parentNode.childNodes[4].innerText)
         console.log(msg)
@@ -98,7 +99,7 @@ Array.from(star).forEach(function(element) {
           })
         })
         .then(response => {
-          console.log(response);
+          
           if (!response.ok) return console.log("error")
             // the event is "save news" the eventlistner is in routes.js
             //emit is creating the event
@@ -108,7 +109,9 @@ Array.from(star).forEach(function(element) {
           
         })
         .then(data => {
-          console.log(data)
+          console.log("this should have THE ID", data)
+          //we are setting the
+          element.setAttribute("data-messageid", data._id)
         })
       });
 });
@@ -122,8 +125,11 @@ function updateMessages(message){
   var spanMessage = document.createElement("SPAN");
   spanMessage.innerHTML = message;
   var spanTrash = document.createElement("SPAN");
+  //creating new trash can
   var iFaTrash = document.createElement("i");
   iFaTrash.className = "fa fa-trash";
+  //add evenet listener to the NEW trash button before the page is reloaded
+  iFaTrash.addEventListener('click', trashHandler)
   iFaTrash.setAttribute("aria-hidden", true);
   spanTrash.appendChild(iFaTrash);
   li.appendChild(spanMessage);
@@ -132,24 +138,27 @@ function updateMessages(message){
   messages.appendChild(li);
 
 }
-
+function trashHandler(){
+  // const name = this.parentNode.parentNode.childNodes[1].innerText
+  const msg = this.parentNode.parentNode.childNodes[1].innerText;
+  const messageid = this.parentNode.parentNode.dataset.messageid;
+  fetch('messages', {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json'
+      
+    },
+    body: JSON.stringify({
+      // 'name': name,
+      'msg': msg,
+      'messageid':messageid
+    })
+  }).then(function (response) {
+    window.location.reload(true)
+  })
+  //clicking on star dynamically creates a li through main.js but it is missing the message id -- was until we added a message id in the star handler
+};
+//for each trash can add eventhandler & will run function  ^^^^ above
 Array.from(trash).forEach(function(element) {
-      element.addEventListener('click', function(){
-        // const name = this.parentNode.parentNode.childNodes[1].innerText
-        const msg = this.parentNode.parentNode.childNodes[1].innerText;
-        fetch('messages', {
-          method: 'delete',
-          headers: {
-            'Content-Type': 'application/json'
-            
-          },
-          body: JSON.stringify({
-            // 'name': name,
-            'msg': msg
-          })
-        }).then(function (response) {
-          window.location.reload(true)
-        })
-        
-      });
+      element.addEventListener('click', trashHandler);
 });

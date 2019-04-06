@@ -73,9 +73,10 @@
             console.log(article)
             console.log(link)
             %>
-            <li class="message1">
+            <!-- attached data to LI so I can grab it later to delete article data-messageId -->
+            <li class="message1" data-messageid="<%= newsArticles[i]._id %>">
               <span><%= article %></span>
-              <a href="<%= link %>">Click Here to read more</a>
+              <a href="%= link"></a>
               
               <span><i class="fa fa-trash" aria-hidden="true"></i></span>
             </li>
