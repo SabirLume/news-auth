@@ -67,4 +67,4 @@ io.on("connection", function(socket){
 
 // launch ======================================================================
 realTime_server.listen(port);
-console.log('The magic happens on port ' + port);
+console.log('The awesome magic happens ' + port);
