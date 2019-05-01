@@ -12,7 +12,7 @@ module.exports = function(app, passport, db, io) {
       return new Promise((resolve, reject) => {
         db.collection('newsArticles').find().toArray((err, result) => {
           if (err) reject({error: err})
-          resolve({user: req.user , newsArticles: result})
+          resolve({user: req.user , newsArticles: result});
         })
       })
     }
@@ -38,49 +38,36 @@ module.exports = function(app, passport, db, io) {
 // message board routes ===============================================================
 
     app.post('/messages', (req, res) => {
-      console.log(req.body)
-      console.log(req.body.msg)
       const message = {msg: req.body.msg}
-      // db.collection('newsArticles').save({msg: req.body.msg}, (err, result) => {
       db.collection('newsArticles').insertOne(message, (err, result) => {
-       console.log('looking for RESULT', message)
        res.setHeader('Content-Type', 'application/json');
-       res.send(JSON.stringify(message))
-
-        if (err) return console.log(err)
+       res.send(JSON.stringify(message));
+        if (err) return console.log(err);
         getNewsArticles(req, res).then( (result) => {
-          console.log("get news articles")
-          let data = result.newsArticles
+          console.log("get news articles");
+          let data = result.newsArticles;
           io.emit("update news", data[data.length-1]);
         })
-        // res.redirect('/profile')
-        console.log('saved to database')
+        console.log('saved to database');
       })
     })
 
     app.put('/messages', (req, res) => {
-      db.collection('newsArticles')
-      .findOneAndUpdate({msg: req.body.msg}, {
-        // $set: {
-        //   star:req.body.star 
-        // }
-      }, {
+      db.collection('newsArticles').findOneAndUpdate({msg: req.body.msg}, {}, {
         sort: {_id: -1},
         upsert: true
       }, (err, result) => {
-        if (err) return res.send(err)
-        console.log('looking  for result of new article', result)
-        res.send(result)
+        if (err) return res.send(err);
+        console.log('looking for result of new article', result);
+        res.send(result);
       })
     })
 
     app.delete('/messages', (req, res) => {
-      console.log('Looking for message id', req.body.messageid)
       //               ---------------------------------- converting string into a special object mongo can use id string to id object
       db.collection('newsArticles').findOneAndDelete({_id:ObjectID(req.body.messageid)}, (err, result) => {
-        if (err) return res.send(500, err)
-        res.send('Message deleted!')
-        console.log('Message Deleted')
+        if (err) return res.send(500, err);
+        res.send('Message deleted!');
       })
     })
 
